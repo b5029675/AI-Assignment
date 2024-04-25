@@ -5,7 +5,6 @@ from sklearn.metrics import classification_report
 from sklearn.tree import DecisionTreeClassifier, plot_tree
 import matplotlib.pyplot as plt
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import cross_val_score
 from sklearn.metrics import classification_report
 #imported XAI packages
 
