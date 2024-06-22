@@ -2,13 +2,15 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import classification_report, confusion_matrix
+from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
 from sklearn.naive_bayes import GaussianNB
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import accuracy_score
+from sklearn import metrics
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
+from sklearn.svm import SVC
 
 #KNN CLASSIFICATION
 
@@ -67,7 +69,6 @@ sns.set_style("whitegrid")
 plt.plot(k_list, MSE)
 plt.show()
 
-
 #Create KNN classifier
 classifier = KNeighborsClassifier(n_neighbors = 3)
 #Fit the data
@@ -80,6 +81,17 @@ y_predict = classifier.predict(X_test)
 print("Confusion Matrix:", confusion_matrix(y_test, y_predict))
 print("Classification Report:" , classification_report(y_test, y_predict))
 
+#Confusion matrix Display
+
+actual = y
+predicted = y_predict
+
+confusion_matrix = metrics.confusion_matrix(actual, predicted)
+
+cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels = [0, 1])
+
+cm_display.plot()
+plt.show()
 
 accuracy = accuracy_score(y_test, y_predict)*100
 print('Accuracy of our model is equal ' + str(round(accuracy, 2)) + ' %.')
