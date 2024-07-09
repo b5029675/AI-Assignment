@@ -6,11 +6,8 @@ from sklearn.metrics import classification_report, confusion_matrix, ConfusionMa
 from sklearn.naive_bayes import GaussianNB
 from sklearn.model_selection import cross_val_score
 from sklearn.metrics import accuracy_score
-from sklearn import metrics
 import matplotlib.pyplot as plt
 import seaborn as sns
-import numpy as np
-from sklearn.svm import SVC
 
 #KNN CLASSIFICATION
 
@@ -67,7 +64,9 @@ plt.xlabel('Number of Neighbors K', fontsize=15)
 plt.ylabel('Misclassification Error', fontsize=15)
 sns.set_style("whitegrid")
 plt.plot(k_list, MSE)
-plt.show()
+
+
+
 
 #Create KNN classifier
 classifier = KNeighborsClassifier(n_neighbors = 3)
@@ -82,16 +81,11 @@ print("Confusion Matrix:", confusion_matrix(y_test, y_predict))
 print("Classification Report:" , classification_report(y_test, y_predict))
 
 #Confusion matrix Display
-
-actual = y
-predicted = y_predict
-
-confusion_matrix = metrics.confusion_matrix(actual, predicted)
-
-cm_display = metrics.ConfusionMatrixDisplay(confusion_matrix = confusion_matrix, display_labels = [0, 1])
-
-cm_display.plot()
-plt.show()
+predictions = classifier.predict(X_test)
+cm = confusion_matrix(y_test, predictions, labels=classifier.classes_)
+disp = ConfusionMatrixDisplay(confusion_matrix=cm,display_labels=classifier.classes_,)
+disp.plot(cmap="Reds", values_format='')
+disp.ax_.set_title("Gradient Boost Confusion Matrix")
 
 accuracy = accuracy_score(y_test, y_predict)*100
 print('Accuracy of our model is equal ' + str(round(accuracy, 2)) + ' %.')
@@ -136,6 +130,13 @@ y2_predict = NBclassifier.predict(X2_test)
 print("Confusion Matrix:", confusion_matrix(y2_test, y2_predict))
 print("Classification Report:", classification_report(y2_test, y2_predict))
 
+#Confusion matrix Display Naive Bayes
+predictions = NBclassifier.predict(X2_test)
+cm = confusion_matrix(y2_test, predictions, labels=NBclassifier.classes_)
+disp = ConfusionMatrixDisplay(confusion_matrix=cm,display_labels=NBclassifier.classes_,)
+disp.plot(cmap="Blues", values_format='')
+disp.ax_.set_title("Gradient Boost Confusion Matrix")
+
 accuracy = accuracy_score(y2_test, y2_predict)*100
 print('Accuracy of our model is equal ' + str(round(accuracy, 2)) + ' %.')
 
@@ -157,3 +158,5 @@ print(y_train.value_counts())
 # Print class distribution in the testing set
 print("\nTesting Set Class Distribution:")
 print(y_test.value_counts())
+
+plt.show()
