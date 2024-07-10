@@ -4,9 +4,10 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay
 from sklearn.naive_bayes import GaussianNB
+from sklearn.model_selection import cross_val_score
 from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
-
+import seaborn as sns
 
 #KNN CLASSIFICATION
 
@@ -40,6 +41,35 @@ X_train = scaler.transform(X_train)
 X_test = scaler.transform(X_test)
 
 
+#Creating graph for optimal K
+# creating list of K for KNN
+k_list = list(range(1,50,2))
+# creating list of cv scores
+cv_scores = []
+
+# perform 10-fold cross validation
+for k in k_list:
+    knn = KNeighborsClassifier(n_neighbors=k)
+    scores = cross_val_score(knn, X_train, y_train, cv=10, scoring='accuracy')
+    cv_scores.append(scores.mean())
+
+# changing to misclassification error
+MSE = [1 - x for x in cv_scores]
+
+
+plt.figure()
+plt.figure(figsize=(15,10))
+plt.title('The optimal number of neighbors', fontsize=20, fontweight='bold')
+plt.xlabel('Number of Neighbors K', fontsize=15)
+plt.ylabel('Misclassification Error', fontsize=15)
+sns.set_style("whitegrid")
+plt.plot(k_list, MSE)
+
+# finding best k
+best_k = k_list[MSE.index(min(MSE))]
+print("The optimal number of neighbors is %d." % best_k)
+
+
 #Create KNN classifier
 classifier = KNeighborsClassifier(n_neighbors = 3)
 #Fit the data
@@ -59,6 +89,7 @@ disp = ConfusionMatrixDisplay(confusion_matrix=cm,display_labels=classifier.clas
 disp.plot(cmap="Reds", values_format='')
 disp.ax_.set_title("Gradient Boost Confusion Matrix")
 
+#Displaying accuracy
 accuracy = accuracy_score(y_test, y_predict)*100
 print('Accuracy of our model is equal ' + str(round(accuracy, 2)) + ' %.')
 
@@ -93,7 +124,7 @@ X2_test = scaler.transform(X2_test)
 #initialise NB classifier
 NBclassifier = GaussianNB()
 
-model = NBclassifier.fit(X2_train, y2_train)
+NBclassifier.fit(X2_train, y2_train)
 
 #make predictions with classifier
 y2_predict = NBclassifier.predict(X2_test)
